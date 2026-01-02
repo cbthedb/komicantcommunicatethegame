@@ -26,9 +26,9 @@ export default function CharacterProfile({ npcId, relationship, onClose, onInter
 
   const interactionOptions = [
     { id: 'chat', label: 'Chat', icon: MessageCircle, unlockLevel: 0 },
-    { id: 'hang_out', label: 'Hang Out', icon: Heart, unlockLevel: 30 },
-    { id: 'give_gift', label: 'Give Gift', icon: Gift, unlockLevel: 50 },
-    { id: 'deep_talk', label: 'Deep Conversation', icon: TrendingUp, unlockLevel: 70 }
+    { id: 'hang_out', label: 'Hang Out', icon: Heart, unlockLevel: 20 },
+    { id: 'give_gift', label: 'Give Gift', icon: Gift, unlockLevel: 10 },
+    { id: 'deep_talk', label: 'Deep Conversation', icon: TrendingUp, unlockLevel: 50 }
   ];
 
   const characterBios = {

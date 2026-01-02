@@ -3,8 +3,8 @@ import { Volume2, VolumeX, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const SOUNDTRACK = [
-  { name: 'Cinderella', url: 'https://www.youtube.com/watch?v=OqamsKJXQmg', youtubeId: 'OqamsKJXQmg' },
-  { name: 'Main Theme', url: 'https://www.youtube.com/watch?v=7p4Vx1HdKF0', youtubeId: '7p4Vx1HdKF0' }
+  { name: 'A High-School Life Without Struggles', url: 'https://www.youtube.com/watch?v=j5W0qRHILoU', youtubeId: 'j5W0qRHILoU' },
+  { name: 'To My First Friend', url: 'https://www.youtube.com/watch?v=6aDb8_MP7CM', youtubeId: '6aDb8_MP7CM' }
 ];
 
 export default function MusicPlayer({ timeSlot }) {

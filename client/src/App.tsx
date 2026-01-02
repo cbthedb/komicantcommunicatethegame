@@ -21,7 +21,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Layout>
+        <Layout currentPageName="Game">
           <Toaster />
           <Router />
         </Layout>

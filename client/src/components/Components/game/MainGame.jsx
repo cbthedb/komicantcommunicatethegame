@@ -509,44 +509,164 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
   // Handle NPC interaction
   const handleNPCSelect = (npcId) => {
     setShowNPCInteraction(false);
+    setShowCharacterProfile(npcId);
+  };
 
+  const handleProfileInteract = (npcId, actionId) => {
     const npc = availableNpcs.find(n => n.id === npcId);
     if (!npc) return;
 
-    // Generate interaction event
-    const relationLevel = relationships[npcId]?.level || 0;
-
-    setCurrentEvent({
-      id: `npc_talk_${npcId}_${Date.now()}`,
-      title: `Talking with ${npc.name}`,
-      description: `You approach ${npc.name}. ${relationLevel >= 60 ? 'They smile warmly at you.' : relationLevel >= 30 ? 'They acknowledge you with a nod.' : 'They look a bit surprised.'}`,
-      choices: [
-        {
-          text: 'Ask about their day',
-          effects: { comfort: 8, energy: -5 },
-          relationTarget: npcId,
-          relationChange: 5
-        },
-        {
-          text: 'Make a joke',
-          effects: { comfort: 10, anxiety: 8, popularity: 3 },
-          relationTarget: npcId,
-          relationChange: 8
-        },
-        {
-          text: 'Just chat casually',
-          effects: { comfort: 12, energy: -5 },
-          relationTarget: npcId,
-          relationChange: 6
-        },
-        {
-          text: 'Invite to hang out later',
-          effects: { anxiety: 15, popularity: 5 },
-          relationTarget: npcId,
-          relationChange: relationLevel >= 40 ? 12 : 3
+    const rel = relationships[npcId];
+    
+    if (actionId === 'give_gift') {
+      setShowCharacterProfile(null);
+      setShowFriendSelector({
+        type: 'gift',
+        targetNpc: npcId,
+        onSelect: (itemId) => {
+          handleUseItem(itemId, npcId);
+          setShowFriendSelector(false);
         }
-      ]
-    });
+      });
+      return;
+    }
+
+    // Handle other interactions (chat, hang out, deep talk)
+    const interactionEvents = {
+      chat: {
+        id: `chat_${npcId}_${Date.now()}`,
+        title: `Chatting with ${npc.name}`,
+        description: `You strike up a casual conversation with ${npc.name}.`,
+        choices: [
+          {
+            text: 'Talk about school',
+            effects: { energy: -5, academic: 2 },
+            relationTarget: npcId,
+            relationChange: 5
+          },
+          {
+            text: 'Share a joke',
+            effects: { energy: -5, comfort: 5 },
+            relationTarget: npcId,
+            relationChange: 7
+          }
+        ]
+      },
+      hang_out: {
+        id: `hangout_${npcId}_${Date.now()}`,
+        title: `Hanging out with ${npc.name}`,
+        description: `You spend some quality time with ${npc.name}.`,
+        choices: [
+          {
+            text: 'Go for a walk',
+            effects: { energy: -15, comfort: 10 },
+            relationTarget: npcId,
+            relationChange: 12
+          }
+        ]
+      },
+      deep_talk: {
+        id: `deeptalk_${npcId}_${Date.now()}`,
+        title: `Deep talk with ${npc.name}`,
+        description: `You and ${npc.name} share some personal thoughts and feelings.`,
+        choices: [
+          {
+            text: 'Listen intently',
+            effects: { energy: -20, trust: 15 },
+            relationTarget: npcId,
+            relationChange: 15
+          }
+        ]
+      }
+    };
+
+    const event = interactionEvents[actionId];
+    if (event) {
+      setShowCharacterProfile(null);
+      setCurrentEvent(event);
+    }
+  };
+
+  // Handle item usage (gifts or consumables)
+  const handleUseItem = (itemId, targetNpcId = null) => {
+    const item = getItemById(itemId);
+    if (!item || !inventory[itemId] || inventory[itemId] <= 0) return;
+
+    const newInventory = { ...inventory };
+    newInventory[itemId]--;
+    if (newInventory[itemId] <= 0) delete newInventory[itemId];
+
+    const updates = { inventory: newInventory };
+
+    if (item.category === 'gift' && targetNpcId) {
+      const effect = calculateGiftEffect(item, targetNpcId);
+      const newRelationships = { ...relationships };
+      const enhanced = EnhancedRelationship.fromJSON(newRelationships[targetNpcId]);
+      
+      // Apply gift effects
+      if (effect.friendship) enhanced.friendship = Math.min(100, enhanced.friendship + effect.friendship);
+      if (effect.trust) enhanced.trust = Math.min(100, enhanced.trust + effect.trust);
+      if (effect.romanticInterest) enhanced.romanticInterest = Math.min(100, enhanced.romanticInterest + effect.romanticInterest);
+      if (effect.comfort) enhanced.comfort = Math.min(100, enhanced.comfort + effect.comfort);
+      
+      enhanced.addMemory(`I gave them a ${item.name}.`);
+      enhanced.updateStage();
+      newRelationships[targetNpcId] = enhanced.toJSON();
+      updates.relationships = newRelationships;
+      
+      showNotification(`Gave ${item.name} to ${availableNpcs.find(n => n.id === targetNpcId)?.name}!`);
+    } else if (item.category === 'consumable') {
+      const newStats = { ...stats };
+      if (item.effects.energy) newStats.energy = Math.min(100, newStats.energy + item.effects.energy);
+      if (item.effects.anxiety) newStats.anxiety = Math.max(0, newStats.anxiety + item.effects.anxiety);
+      if (item.effects.comfort) newStats.comfort = Math.min(100, newStats.comfort + item.effects.comfort);
+      if (item.effects.academic) newStats.academic = Math.min(100, newStats.academic + item.effects.academic);
+      updates.stats = newStats;
+      showNotification(`Used ${item.name}!`);
+    }
+
+    updateGameState(updates);
+  };
+
+  // Handle item usage (gifts or consumables)
+  const handleUseItem = (itemId, targetNpcId = null) => {
+    const item = getItemById(itemId);
+    if (!item || !inventory[itemId] || inventory[itemId] <= 0) return;
+
+    const newInventory = { ...inventory };
+    newInventory[itemId]--;
+    if (newInventory[itemId] <= 0) delete newInventory[itemId];
+
+    const updates = { inventory: newInventory };
+
+    if (item.category === 'gift' && targetNpcId) {
+      const effect = calculateGiftEffect(item, targetNpcId);
+      const newRelationships = { ...relationships };
+      const enhanced = EnhancedRelationship.fromJSON(newRelationships[targetNpcId]);
+      
+      // Apply gift effects
+      if (effect.friendship) enhanced.friendship = Math.min(100, enhanced.friendship + effect.friendship);
+      if (effect.trust) enhanced.trust = Math.min(100, enhanced.trust + effect.trust);
+      if (effect.romanticInterest) enhanced.romanticInterest = Math.min(100, enhanced.romanticInterest + effect.romanticInterest);
+      if (effect.comfort) enhanced.comfort = Math.min(100, enhanced.comfort + effect.comfort);
+      
+      enhanced.addMemory(`I gave them a ${item.name}.`);
+      enhanced.updateStage();
+      newRelationships[targetNpcId] = enhanced.toJSON();
+      updates.relationships = newRelationships;
+      
+      showNotification(`Gave ${item.name} to ${availableNpcs.find(n => n.id === targetNpcId)?.name}!`);
+    } else if (item.category === 'consumable') {
+      const newStats = { ...stats };
+      if (item.effects.energy) newStats.energy = Math.min(100, newStats.energy + item.effects.energy);
+      if (item.effects.anxiety) newStats.anxiety = Math.max(0, newStats.anxiety + item.effects.anxiety);
+      if (item.effects.comfort) newStats.comfort = Math.min(100, newStats.comfort + item.effects.comfort);
+      if (item.effects.academic) newStats.academic = Math.min(100, newStats.academic + item.effects.academic);
+      updates.stats = newStats;
+      showNotification(`Used ${item.name}!`);
+    }
+
+    updateGameState(updates);
   };
 
   // Handle custom action completion
