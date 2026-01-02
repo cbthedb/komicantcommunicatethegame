@@ -750,7 +750,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
   };
 
   // Handle item use
-  const handleUseItem = (itemId) => {
+  const handleUseItemFromInventory = (itemId) => {
     const item = getItemById(itemId);
     if (!item || !inventory[itemId]) return;
 
