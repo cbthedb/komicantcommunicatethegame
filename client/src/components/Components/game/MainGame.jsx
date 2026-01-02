@@ -628,47 +628,6 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     updateGameState(updates);
   };
 
-  // Handle item usage (gifts or consumables)
-  const handleUseItem = (itemId, targetNpcId = null) => {
-    const item = getItemById(itemId);
-    if (!item || !inventory[itemId] || inventory[itemId] <= 0) return;
-
-    const newInventory = { ...inventory };
-    newInventory[itemId]--;
-    if (newInventory[itemId] <= 0) delete newInventory[itemId];
-
-    const updates = { inventory: newInventory };
-
-    if (item.category === 'gift' && targetNpcId) {
-      const effect = calculateGiftEffect(item, targetNpcId);
-      const newRelationships = { ...relationships };
-      const enhanced = EnhancedRelationship.fromJSON(newRelationships[targetNpcId]);
-      
-      // Apply gift effects
-      if (effect.friendship) enhanced.friendship = Math.min(100, enhanced.friendship + effect.friendship);
-      if (effect.trust) enhanced.trust = Math.min(100, enhanced.trust + effect.trust);
-      if (effect.romanticInterest) enhanced.romanticInterest = Math.min(100, enhanced.romanticInterest + effect.romanticInterest);
-      if (effect.comfort) enhanced.comfort = Math.min(100, enhanced.comfort + effect.comfort);
-      
-      enhanced.addMemory(`I gave them a ${item.name}.`);
-      enhanced.updateStage();
-      newRelationships[targetNpcId] = enhanced.toJSON();
-      updates.relationships = newRelationships;
-      
-      showNotification(`Gave ${item.name} to ${availableNpcs.find(n => n.id === targetNpcId)?.name}!`);
-    } else if (item.category === 'consumable') {
-      const newStats = { ...stats };
-      if (item.effects.energy) newStats.energy = Math.min(100, newStats.energy + item.effects.energy);
-      if (item.effects.anxiety) newStats.anxiety = Math.max(0, newStats.anxiety + item.effects.anxiety);
-      if (item.effects.comfort) newStats.comfort = Math.min(100, newStats.comfort + item.effects.comfort);
-      if (item.effects.academic) newStats.academic = Math.min(100, newStats.academic + item.effects.academic);
-      updates.stats = newStats;
-      showNotification(`Used ${item.name}!`);
-    }
-
-    updateGameState(updates);
-  };
-
   // Handle custom action completion
   const handleCustomActionComplete = (result) => {
     setShowCustomAction(false);
@@ -1404,10 +1363,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
             npcId={showCharacterProfile}
             relationship={relationships[showCharacterProfile]}
             onClose={() => setShowCharacterProfile(null)}
-            onInteract={(type) => {
-              showNotification(`You ${type.replace('_', ' ')} with ${availableNpcs.find(n => n.id === showCharacterProfile)?.name}`);
-              setShowCharacterProfile(null);
-            }}
+            onInteract={(actionId) => handleProfileInteract(showCharacterProfile, actionId)}
           />
         )}
       </AnimatePresence>
