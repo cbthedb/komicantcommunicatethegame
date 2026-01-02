@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import CharacterSelect from '@/components/game/CharacterSelect';
-import MainGame from '@/components/game/MainGame';
-import TitleScreen from '@/components/game/TitleScreen';
-import EndingScreen from '@/components/game/EndingScreen';
-import SaveManager, { SAVE_PREFIX } from '@/components/game/SaveManager';
-import LoadingScreen from '@/components/game/LoadingScreen';
+import CharacterSelect from '@/components/Components/game/CharacterSelect';
+import MainGame from '@/components/Components/game/MainGame';
+import TitleScreen from '@/components/Components/game/TitleScreen';
+import EndingScreen from '@/components/Components/game/EndingScreen';
+import SaveManager, { SAVE_PREFIX } from '@/components/Components/game/SaveManager';
+import LoadingScreen from '@/components/Components/game/LoadingScreen';
 
 const initialGameState = {
 player: null,

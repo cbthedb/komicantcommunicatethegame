@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { X, Send, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { NPC_CHARACTERS } from './gameData';
 
 function getNPCData(npcId, gameState) {
@@ -101,119 +100,8 @@ export default function CustomActionDialog({
     const intent = analyzeIntent(customInput, npcData, gameState);
 
     try {
-      // Use LLM to analyze the custom action and generate NPC response
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are simulating a social interaction in a high school life sim game based on "Komi Can't Communicate". 
-
-    Current situation: ${event.description}
-
-    ${npcData ? `NPC Character: ${npcData.name} - ${npcData.description}
-    Personality: ${npcData.traits.join(', ')}
-    Current relationship with player:
-    - Friendship: ${npcData.relationshipLevel}/100
-    - Stage: ${npcData.relationshipState}
-    - Romance status: ${gameState.romanceTarget === npcInvolved ? 'Dating' : 'Not dating'}
-    - Recent memories: ${gameState.relationships[npcInvolved]?.memories?.slice(-2).map(m => m.text).join('; ') || 'None'}
-
-    IMPORTANT FOR KOMI:
-    ${npcInvolved === 'komi' ? `- Komi has severe communication disorder and rarely speaks
-    - She communicates primarily through writing, gestures, and expressions
-    - Gentle, patient actions are highly valued by her
-    - Rushing or pushing her causes high anxiety
-    - Writing notes to her is extremely effective
-    - Public declarations make her very anxious` : ''}` : ''}
-
-    Player stats:
-    - Anxiety: ${gameState.stats.anxiety}
-    - Comfort: ${gameState.stats.comfort}
-    - Energy: ${gameState.stats.energy}
-    - Popularity: ${gameState.stats.popularity}
-    - Academic: ${gameState.stats.academic}
-    - Money: $${gameState.money}
-
-    Action Intent Analysis:
-    - Type: ${intent.type}
-    - Target: ${intent.target}
-    - Tone: ${intent.tone}
-    - Risk Level: ${intent.risk}
-
-    The player says/does: "${customInput}"
-
-    CRITICAL: Generate a UNIQUE, CONTEXT-AWARE outcome. NOT a generic fallback!
-
-    ${npcData ? `Generate ${npcData.name}'s response based on:
-    1. Their personality traits
-    2. Current relationship level
-    3. Recent memories together
-    4. The specific action the player took
-    5. For Komi: Show communication through writing/gestures if she can't speak` : ''}
-
-    Determine:
-    1. Stat changes (anxiety, comfort, energy, popularity, academic, money) - values from -30 to +30 based on action significance
-    2. Relationship dimension changes (friendship, trust, comfort, romanticInterest) - values from -25 to +25
-    3. ${npcData ? `${npcData.name}'s realistic, in-character response (2-4 sentences)` : 'A detailed outcome description (2-3 sentences)'}
-    4. Whether this action progresses time
-    5. A memory to record about this interaction
-    6. Story flags if applicable
-    7. If romance-related: romantic interest change and whether to start dating
-
-    IMPORTANT: 
-    - Different actions MUST produce different outcomes
-    - Consider relationship history and personality
-    - Confessions require high relationship levels to succeed
-    - Public vs private matters
-    - Thoughtful actions > generic actions
-
-    Respond ONLY with valid JSON matching the schema provided.`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            stat_changes: {
-              type: 'object',
-              properties: {
-                anxiety: { type: 'number' },
-                comfort: { type: 'number' },
-                energy: { type: 'number' },
-                popularity: { type: 'number' },
-                academic: { type: 'number' },
-                money: { type: 'number' }
-              }
-            },
-            relationship_changes: {
-              type: 'object',
-              properties: {
-                friendship: { type: 'number' },
-                trust: { type: 'number' },
-                comfort: { type: 'number' },
-                romanticInterest: { type: 'number' }
-              }
-            },
-            npc_response: { type: 'string' },
-            outcome: { type: 'string' },
-            memory: { type: 'string' },
-            progresses_time: { type: 'boolean' },
-            add_flags: {
-              type: 'array',
-              items: { type: 'string' }
-            },
-            start_dating: { type: 'boolean' }
-          },
-          required: ['stat_changes', 'outcome', 'progresses_time', 'memory']
-        }
-      });
-
-      onComplete({
-        effects: result.stat_changes,
-        relationshipChanges: result.relationship_changes || { friendship: result.relationship_change || 0 },
-        outcome: result.outcome,
-        memory: result.memory,
-        progressTime: result.progresses_time,
-        customAction: customInput,
-        npcResponse: result.npc_response,
-        addFlags: result.add_flags || [],
-        startDating: result.start_dating || false,
-        npcInvolved: npcInvolved
-      });
+      // LLM functionality disabled as base44 integration is not available in Replit
+      throw new Error('LLM service unavailable');
     } catch (error) {
       console.error('Failed to process custom action:', error);
       // Better fallback based on intent
