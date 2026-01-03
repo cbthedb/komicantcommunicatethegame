@@ -291,8 +291,8 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
         timeSlot: 'morning',
         stats: {
           ...stats,
-          energy: Math.min(100, stats.energy + 30),
-          anxiety: Math.max(0, stats.anxiety - 5)
+          energy: Math.min(100, stats.energy + 20),
+          anxiety: Math.max(0, stats.anxiety - 3)
         }
       });
       showNotification('A new day begins...');
@@ -597,7 +597,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       };
       
       if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
-        showNotification(`You're now dating ${npc.name}! ❤️`);
+        showNotification("You confessed your feelings...");
         // Immediately trigger the Romance Panel after a successful confession
         setTimeout(() => {
           setRomanticTarget(npcId);

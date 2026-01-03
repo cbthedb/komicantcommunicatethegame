@@ -134,8 +134,8 @@ export class EnhancedRelationship {
     baseChance -= this.rejectionCount * 10;
 
     // If friendship is very high, we should be much more likely to succeed
-    if (this.friendship >= 95) baseChance += 50;
-    else if (this.friendship >= 80) baseChance += 30;
+    if (this.friendship >= 95) baseChance += 40;
+    else if (this.friendship >= 80) baseChance += 20;
 
     return Math.max(10, Math.min(100, baseChance));
   }
@@ -148,28 +148,28 @@ export class EnhancedRelationship {
     const roll = Math.random() * 100;
 
     // GUARANTEED SUCCESS if friendship is high OR base chance is high enough
-    if (this.friendship >= 70 || chance >= 70) {
-      this.romanticInterest = Math.min(100, this.romanticInterest + 25);
-      this.trust = Math.min(100, this.trust + 15);
-      this.friendship = Math.min(100, this.friendship + 10);
+    if (this.friendship >= 85 || chance >= 85) {
+      this.romanticInterest = Math.min(100, this.romanticInterest + 15);
+      this.trust = Math.min(100, this.trust + 8);
+      this.friendship = Math.min(100, this.friendship + 5);
       this.addMemory('They asked me out! I said yes immediately!');
       this.updateStage();
       return 'enthusiastic_yes';
     }
 
-    if (roll < chance * 0.5) {
+    if (roll < chance * 0.4) {
       // Enthusiastic yes
-      this.romanticInterest = Math.min(100, this.romanticInterest + 20);
-      this.trust = Math.min(100, this.trust + 10);
-      this.friendship = Math.min(100, this.friendship + 15);
+      this.romanticInterest = Math.min(100, this.romanticInterest + 15);
+      this.trust = Math.min(100, this.trust + 8);
+      this.friendship = Math.min(100, this.friendship + 5);
       this.addMemory('They asked me out! I said yes immediately!');
       this.updateStage();
       return 'enthusiastic_yes';
     } else if (roll < chance) {
       // Hesitant yes
-      this.romanticInterest = Math.min(100, this.romanticInterest + 15);
-      this.trust = Math.min(100, this.trust + 5);
-      this.friendship = Math.min(100, this.friendship + 10);
+      this.romanticInterest = Math.min(100, this.romanticInterest + 10);
+      this.trust = Math.min(100, this.trust + 4);
+      this.friendship = Math.min(100, this.friendship + 5);
       this.addMemory('They asked me out. I was nervous but said yes.');
       this.updateStage();
       return 'hesitant_yes';

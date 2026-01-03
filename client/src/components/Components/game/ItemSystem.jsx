@@ -12,39 +12,39 @@ export const ITEMS = [
     id: 'chocolate',
     name: 'Chocolate',
     category: ITEM_CATEGORIES.GIFT,
-    price: 150,
+    price: 300,
     description: 'Sweet chocolate. Good for any occasion.',
-    effects: { friendship: 8, romanticInterest: 5 },
+    effects: { friendship: 4, romanticInterest: 2 },
     npcPreferences: {
-      agari: 15, // Agari loves food
-      otori: 12,
-      komi: 10
+      agari: 10, // Agari loves food
+      otori: 8,
+      komi: 5
     }
   },
   {
     id: 'fancy_chocolate',
     name: 'Fancy Chocolate Box',
     category: ITEM_CATEGORIES.GIFT,
-    price: 500,
+    price: 850,
     description: 'Expensive artisan chocolates. Very impressive!',
-    effects: { friendship: 15, romanticInterest: 12, trust: 8 },
+    effects: { friendship: 8, romanticInterest: 6, trust: 4 },
     npcPreferences: {
-      komi: 20,
-      yamai: 18,
-      onemine: 15
+      komi: 12,
+      yamai: 10,
+      onemine: 8
     }
   },
   {
     id: 'notebook',
     name: 'Cute Notebook',
     category: ITEM_CATEGORIES.GIFT,
-    price: 200,
+    price: 450,
     description: 'A notebook with cute designs. Perfect for writing.',
-    effects: { friendship: 10, comfort: 8 },
+    effects: { friendship: 5, comfort: 4 },
     npcPreferences: {
-      komi: 25, // Komi loves notebooks for communication
-      nakanaka: 15,
-      tadano: 12
+      komi: 15, // Komi loves notebooks for communication
+      nakanaka: 8,
+      tadano: 6
     }
   },
   {

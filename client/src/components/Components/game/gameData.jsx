@@ -84,9 +84,9 @@ export const EVENTS = {
         title: 'Desk Neighbor',
         description: 'Someone sits next to you and glances over nervously.',
         choices: [
-          { text: 'Say good morning', effects: { anxiety: 5, comfort: -5, popularity: 3 }, relationTarget: 'random', relationChange: 5 },
-          { text: 'Nod silently', effects: { anxiety: -5, comfort: 5, popularity: 1 }, relationTarget: 'random', relationChange: 2 },
-          { text: 'Pretend to be asleep', effects: { anxiety: -10, comfort: 10 } }
+          { text: 'Say good morning', effects: { anxiety: 5, comfort: -3, popularity: 2 }, relationTarget: 'random', relationChange: 3 },
+          { text: 'Nod silently', effects: { anxiety: -3, comfort: 3, popularity: 1 }, relationTarget: 'random', relationChange: 1 },
+          { text: 'Pretend to be asleep', effects: { anxiety: -5, comfort: 5 } }
         ]
       },
       {
@@ -94,9 +94,9 @@ export const EVENTS = {
         title: 'Early Bird',
         description: 'You arrived early. The classroom is almost empty.',
         choices: [
-          { text: 'Study quietly', effects: { academic: 5, comfort: 5 } },
-          { text: 'Look out the window', effects: { comfort: 10, energy: 5 } },
-          { text: 'Review notes nervously', effects: { academic: 3, anxiety: 5 } }
+          { text: 'Study quietly', effects: { academic: 3, comfort: 3 } },
+          { text: 'Look out the window', effects: { comfort: 5, energy: 3 } },
+          { text: 'Review notes nervously', effects: { academic: 2, anxiety: 5 } }
         ]
       }
     ],
