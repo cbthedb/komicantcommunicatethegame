@@ -110,10 +110,10 @@ export class EnhancedRelationship {
     let baseChance = 0;
 
     // Stage bonuses
-    if (this.stage === 'mutual_interest') baseChance = 80;
-    else if (this.stage === 'close_friend') baseChance = 50;
-    else if (this.stage === 'friend') baseChance = 30;
-    else baseChance = 10;
+    if (this.stage === 'mutual_interest') baseChance = 85;
+    else if (this.stage === 'close_friend') baseChance = 70;
+    else if (this.stage === 'friend') baseChance = 40;
+    else baseChance = 15;
 
     // Trust bonus
     baseChance += (this.trust - 40) * 0.8;
