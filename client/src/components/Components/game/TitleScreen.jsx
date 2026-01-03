@@ -82,7 +82,33 @@ export default function TitleScreen({ onNewGame, onLoadGame, hasSave }) {
             <span className="text-lg font-light tracking-wide">Continue</span>
           </Button>
         )}
+
+        {/* Credits Section */}
+        <div className="mt-4 p-4 bg-slate-900/50 rounded-xl border border-purple-500/20 text-center">
+          <p className="text-[10px] text-purple-400/80 font-medium mb-1 uppercase tracking-widest">Credits</p>
+          <div className="space-y-1">
+            <p className="text-xs text-purple-200/90">Made By Plozo</p>
+            <p className="text-[10px] text-purple-300/70 italic">All OST Owned By Netflix</p>
+            <p className="text-[9px] text-purple-400/60 leading-tight mt-2">
+              This is a fangame made by me, all copyright sources go to Komi Cant Communicate.
+            </p>
+          </div>
+        </div>
       </motion.div>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.8 }}
+        transition={{ 
+          delay: 1.5,
+          duration: 0.5,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+        className="absolute bottom-4 right-4 text-xs font-bold text-pink-500 tracking-tighter"
+      >
+        V0.1
+      </motion.p>
 
       <motion.p
         initial={{ opacity: 0 }}
