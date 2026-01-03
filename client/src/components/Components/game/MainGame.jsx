@@ -567,6 +567,11 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       
       if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
         showNotification(`You're now dating ${npc.name}! ❤️`);
+        // Immediately trigger the Romance Panel after a successful confession
+        setTimeout(() => {
+          setRomanticTarget(npcId);
+          setShowRomanticActions(true);
+        }, 1500);
       } else if (result === 'not_yet') {
         showNotification(`${npc.name} said they need more time.`);
       } else {

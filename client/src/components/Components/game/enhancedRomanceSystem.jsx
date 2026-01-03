@@ -27,6 +27,11 @@ export class EnhancedRelationship {
   // Calculate current relationship stage
   calculateStage() {
     // Check for romantic stages first
+    if (this.stage === 'dating' || this.stage === 'serious') {
+      if (this.friendship >= 85 && this.trust >= 85 && this.romanticInterest >= 80) return 'serious';
+      return 'dating';
+    }
+
     if (this.friendship >= 85 && this.trust >= 85 && this.romanticInterest >= 80) {
       return 'serious';
     }
