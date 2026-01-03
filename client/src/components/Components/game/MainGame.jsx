@@ -289,6 +289,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       updateGameState({
         day: day + 1,
         timeSlot: 'morning',
+        romanceTurns: 0,
         stats: {
           ...stats,
           energy: Math.min(100, stats.energy + 20),
@@ -297,7 +298,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       });
       showNotification('A new day begins...');
     } else {
-      updateGameState({ timeSlot: timeOrder[currentIndex + 1] });
+      updateGameState({ timeSlot: timeOrder[currentIndex + 1], romanceTurns: 0 });
     }
 
     setCurrentEvent(null);

@@ -35,6 +35,13 @@ export default function RomanticActionsPanel({
   const availableActions = getAvailableRomanticActions(relationship, gameState);
 
   const handleAction = (action) => {
+    // Check for turn limits (max 2 romance actions per time slot)
+    const romanceTurns = gameState.romanceTurns || 0;
+    if (romanceTurns >= 2) {
+      onAction({ ...action, error: "You've done enough for now. Give them some space!" });
+      return;
+    }
+
     if (action.id === 'ask_out') {
       setConfirming(action);
     } else {
