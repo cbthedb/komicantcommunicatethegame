@@ -578,7 +578,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       return;
     }
 
-    if (actionId === 'ask_out') {
+    if (actionId === 'confess') {
       const enhanced = EnhancedRelationship.fromJSON(rel);
       const result = enhanced.processAskOut(day);
       const updatedRel = enhanced.toJSON();

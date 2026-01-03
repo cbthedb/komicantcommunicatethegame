@@ -264,7 +264,7 @@ export function getAvailableRomanticActions(relationship, gameState) {
   if (relationship.canAskOut()) {
     actions.push({ 
       id: 'ask_out', 
-      label: 'Ask Them Out', 
+      label: 'Confess Feelings', 
       special: true,
       effects: {}, 
       energy: -15,
