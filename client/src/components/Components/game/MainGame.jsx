@@ -523,16 +523,16 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     if (actionId === 'give_gift') {
       const giftItems = Object.entries(inventory).filter(([id, qty]) => {
         const item = getItemById(id);
-        return item && item.category === 'gift' && qty > 0;
+        return item && (item.category === 'gift' || item.category === 'consumable') && qty > 0;
       });
 
       if (giftItems.length === 0) {
-        showNotification("You don't have any gifts in your inventory!");
+        showNotification("You don't have any suitable gifts in your inventory!");
         return;
       }
 
       setShowCharacterProfile(null);
-      // We'll reuse the InventoryPanel or a similar picker
+      // Ensure showInventory is set correctly for gift giving mode
       setShowInventory({
         mode: 'pick_gift',
         targetNpc: npcId
@@ -673,12 +673,15 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       updates.relationships = newRelationships;
       
       showNotification(`Gave ${item.name} to ${availableNpcs.find(n => n.id === targetNpcId)?.name}!`);
-    } else if (item.category === 'consumable') {
+    } else if (item.category === 'consumable' || item.category === 'book') {
       const newStats = { ...stats };
-      if (item.effects.energy) newStats.energy = Math.min(100, newStats.energy + item.effects.energy);
-      if (item.effects.anxiety) newStats.anxiety = Math.max(0, newStats.anxiety + item.effects.anxiety);
-      if (item.effects.comfort) newStats.comfort = Math.min(100, newStats.comfort + item.effects.comfort);
-      if (item.effects.academic) newStats.academic = Math.min(100, newStats.academic + item.effects.academic);
+      if (item.effects) {
+        if (item.effects.energy) newStats.energy = Math.min(100, newStats.energy + item.effects.energy);
+        if (item.effects.anxiety) newStats.anxiety = Math.max(0, newStats.anxiety + item.effects.anxiety);
+        if (item.effects.comfort) newStats.comfort = Math.min(100, newStats.comfort + item.effects.comfort);
+        if (item.effects.academic) newStats.academic = Math.min(100, newStats.academic + item.effects.academic);
+        if (item.effects.popularity) newStats.popularity = Math.min(100, newStats.popularity + item.effects.popularity);
+      }
       updates.stats = newStats;
       showNotification(`Used ${item.name}!`);
     }

@@ -152,7 +152,8 @@ export default function InventoryPanel({
                     )}
 
                     <div className="flex gap-3">
-                      {selectedItem.item.category === ITEM_CATEGORIES.GIFT && (
+                      {(selectedItem.item.category === ITEM_CATEGORIES.GIFT || 
+                        selectedItem.item.category === ITEM_CATEGORIES.CONSUMABLE) && (
                         <Button
                           onClick={handleGiftSelect}
                           className="flex-1 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700"

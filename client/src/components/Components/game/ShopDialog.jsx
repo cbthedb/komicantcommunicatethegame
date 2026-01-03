@@ -19,7 +19,7 @@ export default function ShopDialog({ shop, money, inventory, onBuy, onClose }) {
 
   const handleBuy = (item) => {
     if (money >= item.price) {
-      onBuy(item);
+      onBuy(item.id);
       setSelectedItem(null);
     }
   };
