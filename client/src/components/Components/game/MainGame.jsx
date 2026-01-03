@@ -386,6 +386,7 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
 
         // Update relationship state
         const newLevel = newRelationships[targetId].level;
+        newRelationships[targetId].friendship = newLevel; // Link friendship to level
         if (newLevel >= 80) {
           newRelationships[targetId].state = 'close_friend';
           if (oldLevel < 80) newFriendCount++;
@@ -589,10 +590,12 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
         const newRelationships = { ...relationships };
         const baseChange = actionId === 'chat' ? 2 : actionId === 'hang_out' ? 5 : 8;
         
+        // Link level and friendship for consistency
+        const newVal = Math.min(100, (currentRel.level || 0) + baseChange);
         newRelationships[npcId] = {
           ...currentRel,
-          level: Math.min(100, (currentRel.level || 0) + baseChange),
-          friendship: Math.min(100, (currentRel.friendship || 0) + baseChange)
+          level: newVal,
+          friendship: newVal
         };
         
         updateGameState({ relationships: newRelationships });
@@ -630,7 +633,9 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       
       enhanced.addMemory(`I gave them a ${item.name}.`);
       enhanced.updateStage();
-      newRelationships[targetNpcId] = enhanced.toJSON();
+      const updatedRelData = enhanced.toJSON();
+      updatedRelData.level = updatedRelData.friendship; // Keep linked for consistency
+      newRelationships[targetNpcId] = updatedRelData;
       updates.relationships = newRelationships;
       
       showNotification(`Gave ${item.name} to ${availableNpcs.find(n => n.id === targetNpcId)?.name}!`);
