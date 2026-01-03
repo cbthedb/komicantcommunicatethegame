@@ -24,8 +24,6 @@ export default function CharacterProfile({ npcId, relationship, onClose, onInter
   const currentStage = relationshipStages.find(s => displayLevel >= s.min && displayLevel <= s.max) || relationshipStages[0];
   const nextStage = relationshipStages.find(s => s.min > displayLevel);
 
-  const bio = characterBios[npcId] || characterBios.tadano;
-
   const interactionOptions = [
     { id: 'chat', label: 'Chat', icon: MessageCircle, unlockLevel: 0 },
     { id: 'hang_out', label: 'Hang Out', icon: Heart, unlockLevel: 20 },
