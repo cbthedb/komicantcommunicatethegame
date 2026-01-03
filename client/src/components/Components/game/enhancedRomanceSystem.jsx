@@ -142,8 +142,8 @@ export class EnhancedRelationship {
     const chance = this.getAskOutChance();
     const roll = Math.random() * 100;
 
-    // GUARANTEED SUCCESS if friendship is maxed and trust is decent
-    if (this.friendship >= 95 && (this.trust >= 40 || this.romanticInterest >= 30)) {
+    // GUARANTEED SUCCESS if friendship is high OR base chance is high enough
+    if (this.friendship >= 70 || chance >= 70) {
       this.romanticInterest = Math.min(100, this.romanticInterest + 25);
       this.trust = Math.min(100, this.trust + 15);
       this.friendship = Math.min(100, this.friendship + 10);
