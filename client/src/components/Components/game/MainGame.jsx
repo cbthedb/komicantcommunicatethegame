@@ -540,6 +540,13 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       return;
     }
 
+    if (actionId === 'romance') {
+      setShowCharacterProfile(null);
+      setRomanticTarget(npcId);
+      setShowRomanticActions(true);
+      return;
+    }
+
     if (actionId === 'ask_out') {
       const enhanced = EnhancedRelationship.fromJSON(rel);
       const result = enhanced.processAskOut(day);
