@@ -583,6 +583,20 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     const event = interactionEvents[actionId];
     if (event) {
       setShowCharacterProfile(null);
+      // Immediately apply a small boost since we're in the profile tab
+      const currentRel = relationships[npcId];
+      if (currentRel) {
+        const newRelationships = { ...relationships };
+        const baseChange = actionId === 'chat' ? 2 : actionId === 'hang_out' ? 5 : 8;
+        
+        newRelationships[npcId] = {
+          ...currentRel,
+          level: Math.min(100, (currentRel.level || 0) + baseChange),
+          friendship: Math.min(100, (currentRel.friendship || 0) + baseChange)
+        };
+        
+        updateGameState({ relationships: newRelationships });
+      }
       setCurrentEvent(event);
     }
   };
