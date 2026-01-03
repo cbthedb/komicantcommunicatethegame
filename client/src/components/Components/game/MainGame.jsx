@@ -540,6 +540,37 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       return;
     }
 
+    if (actionId === 'break_up') {
+      const npc = availableNpcs.find(n => n.id === npcId);
+      if (!confirm(`Are you sure you want to break up with ${npc?.name}? This will significantly damage your relationship.`)) return;
+
+      const newRelationships = { ...relationships };
+      const currentRel = newRelationships[npcId];
+      if (currentRel) {
+        const enhanced = EnhancedRelationship.fromJSON(currentRel);
+        enhanced.romanticInterest = Math.max(0, enhanced.romanticInterest - 50);
+        enhanced.trust = Math.max(0, enhanced.trust - 40);
+        enhanced.friendship = Math.max(0, enhanced.friendship - 30);
+        enhanced.stage = 'acquaintance';
+        enhanced.addMemory(`We broke up... it was painful.`);
+        
+        const updatedRel = enhanced.toJSON();
+        updatedRel.level = updatedRel.friendship;
+        newRelationships[npcId] = updatedRel;
+      }
+
+      updateGameState({
+        relationships: newRelationships,
+        romanceTarget: null,
+        romanceStatus: 'none',
+        romanceLevel: 0
+      });
+
+      showNotification(`You broke up with ${npc?.name}.`);
+      setShowCharacterProfile(null);
+      return;
+    }
+
     if (actionId === 'romance') {
       setShowCharacterProfile(null);
       setRomanticTarget(npcId);
