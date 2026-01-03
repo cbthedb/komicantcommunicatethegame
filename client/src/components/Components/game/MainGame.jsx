@@ -378,15 +378,16 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       }
 
       if (targetId && newRelationships[targetId]) {
-        const oldLevel = newRelationships[targetId].level;
+        const currentRel = newRelationships[targetId];
+        const oldLevel = currentRel.friendship || currentRel.level || 0;
+        const newLevel = Math.max(0, Math.min(100, oldLevel + (choice.relationChange || 0)));
+        
         newRelationships[targetId] = {
-          ...newRelationships[targetId],
-          level: Math.max(0, Math.min(100, oldLevel + (choice.relationChange || 0)))
+          ...currentRel,
+          level: newLevel,
+          friendship: newLevel
         };
 
-        // Update relationship state
-        const newLevel = newRelationships[targetId].level;
-        newRelationships[targetId].friendship = newLevel; // Link friendship to level
         if (newLevel >= 80) {
           newRelationships[targetId].state = 'close_friend';
           if (oldLevel < 80) newFriendCount++;
@@ -591,7 +592,8 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
         const baseChange = actionId === 'chat' ? 2 : actionId === 'hang_out' ? 5 : 8;
         
         // Link level and friendship for consistency
-        const newVal = Math.min(100, (currentRel.level || 0) + baseChange);
+        const oldVal = currentRel.friendship || currentRel.level || 0;
+        const newVal = Math.min(100, oldVal + baseChange);
         newRelationships[npcId] = {
           ...currentRel,
           level: newVal,
