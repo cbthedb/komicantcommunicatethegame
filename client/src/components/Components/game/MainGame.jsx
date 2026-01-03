@@ -521,14 +521,21 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     const rel = relationships[npcId];
     
     if (actionId === 'give_gift') {
+      const giftItems = Object.entries(inventory).filter(([id, qty]) => {
+        const item = getItemById(id);
+        return item && item.category === 'gift' && qty > 0;
+      });
+
+      if (giftItems.length === 0) {
+        showNotification("You don't have any gifts in your inventory!");
+        return;
+      }
+
       setShowCharacterProfile(null);
-      setShowFriendSelector({
-        type: 'gift',
-        targetNpc: npcId,
-        onSelect: (itemId) => {
-          handleUseItem(itemId, npcId);
-          setShowFriendSelector(false);
-        }
+      // We'll reuse the InventoryPanel or a similar picker
+      setShowInventory({
+        mode: 'pick_gift',
+        targetNpc: npcId
       });
       return;
     }
@@ -677,6 +684,31 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     }
 
     updateGameState(updates);
+  };
+
+  // Handle buying items
+  const handleBuyItem = (itemId) => {
+    const item = getItemById(itemId);
+    if (!item || money < item.price) return;
+
+    const newInventory = { ...inventory };
+    newInventory[itemId] = (newInventory[itemId] || 0) + 1;
+
+    updateGameState({
+      money: money - item.price,
+      inventory: newInventory
+    });
+
+    showNotification(`Bought ${item.name}!`);
+  };
+
+  // Handle giving item
+  const handleGiveItem = (itemId, npcId) => {
+    handleUseItem(itemId, npcId);
+  };
+
+  const handleUseItemFromInventory = (itemId) => {
+    handleUseItem(itemId);
   };
 
   // Handle custom action completion
@@ -1594,6 +1626,8 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
             onClose={() => setShowInventory(false)}
             availableNpcs={availableNpcs}
             relationships={relationships}
+            mode={typeof showInventory === 'object' ? showInventory.mode : 'view'}
+            targetNpc={typeof showInventory === 'object' ? showInventory.targetNpc : null}
           />
         )}
       </AnimatePresence>

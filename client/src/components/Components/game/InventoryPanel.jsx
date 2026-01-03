@@ -20,7 +20,9 @@ export default function InventoryPanel({
   onGive, 
   onClose,
   availableNpcs,
-  relationships 
+  relationships,
+  mode = 'view',
+  targetNpc = null
 }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showGiftSelector, setShowGiftSelector] = useState(false);
@@ -38,7 +40,11 @@ export default function InventoryPanel({
   };
 
   const handleGiftSelect = () => {
-    setShowGiftSelector(true);
+    if (targetNpc) {
+      handleGiveToNpc(targetNpc);
+    } else {
+      setShowGiftSelector(true);
+    }
   };
 
   const handleGiveToNpc = (npcId) => {
@@ -46,6 +52,7 @@ export default function InventoryPanel({
       onGive(selectedItem.item.id, npcId);
       setShowGiftSelector(false);
       setSelectedItem(null);
+      if (mode === 'pick_gift') onClose();
     }
   };
 
