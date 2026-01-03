@@ -1,0 +1,227 @@
+🔧 UPDATE-ONLY PROMPT — DEEPEN & CONNECT EXISTING SYSTEMS
+
+(DO NOT REWRITE THE GAME)
+
+You are working on an existing Komi Can’t Communicate–inspired life simulation game.
+
+⚠️ CRITICAL RULE:
+Do NOT create a new project or rewrite core systems.
+You must extend, repair, and connect what already exists.
+
+The game already has:
+
+Turns
+
+NPCs
+
+Friendship / affinity
+
+A shop
+
+Inventory
+
+Profile tab
+
+Romance ask-out logic
+
+Custom Action input
+
+Your task is to make these systems actually work together and add depth, not replace them.
+
+1️⃣ DO NOT RESET DATA OR STRUCTURE
+
+Keep existing NPCs
+
+Keep existing UI tabs
+
+Keep existing turn system
+
+Keep existing save system / local storage
+
+Only:
+✔ add missing fields
+✔ add missing logic
+✔ connect systems
+
+2️⃣ FIX DISCONNECTED SYSTEMS (TOP PRIORITY)
+🛒 Shop → Inventory → NPC
+
+If an item is bought:
+
+It MUST appear in inventory
+
+Inventory items MUST be selectable during NPC interaction
+
+Gifting MUST:
+
+Remove the item
+
+Trigger NPC-specific reaction
+
+Increase/decrease affinity
+
+Create a memory entry
+
+If gifting currently does nothing → wire it into the NPC stat system.
+
+👤 Profile Tab → Affinity
+
+Any action done in the profile tab MUST:
+
+Modify friendship / romance / trust
+
+Be logged as a memory
+
+Affect future dialogue
+
+Profile actions may NOT be cosmetic.
+
+3️⃣ FIX ROMANCE PROGRESSION (REMOVE BROKEN CAP)
+
+Romance is currently hard-capped at ~70, making progression impossible.
+
+REQUIRED FIX:
+
+Remove hard numeric caps
+
+Replace with relationship stages that gate actions instead of stats
+
+Example:
+
+Dating unlocks new actions
+
+Romance can continue increasing after dating
+
+Trust + comfort influence success/failure
+
+Romance should be able to reach 100 if actions are consistent and appropriate.
+
+4️⃣ EXPAND ACTIONS (WITHOUT CHANGING UI STRUCTURE)
+
+Keep existing tabs, but add more options inside them.
+
+Add Social / Romantic Actions:
+
+Give gift (inventory-based)
+
+Buy gift specifically for NPC
+
+Flirt (soft / bold)
+
+Comfort / encourage
+
+Ask about family
+
+Meet parents (after dating)
+
+Go on dates
+
+Anniversary / special events
+
+Resolve misunderstandings
+
+Each action MUST:
+
+Check relationship context
+
+Modify stats
+
+Add memory
+
+Have multiple possible outcomes
+
+5️⃣ CUSTOM ACTION TAB — REPLACE GENERIC RESPONSE
+
+The current response:
+
+“You tried your best…”
+
+is unacceptable.
+
+REQUIRED BEHAVIOR:
+
+When the player enters a custom action:
+
+Parse intent (romantic, awkward, bold, kind, reckless)
+
+Identify target NPC (if any)
+
+Check relationship state + past memories
+
+Generate a contextual scene
+
+Apply stat changes
+
+Log memory
+
+No single canned response.
+Each input must produce different outcomes.
+
+6️⃣ NPC MEMORY & CONSEQUENCES (EXTEND EXISTING MEMORY)
+
+NPCs must remember:
+
+Gifts
+
+Confessions
+
+Rejections
+
+Awkward moments
+
+Emotional support
+
+Memories influence:
+
+Dialogue tone
+
+Romance difficulty
+
+Willingness to accept advances
+
+If memory exists but is unused → make it affect logic.
+
+7️⃣ ANTI-STALENESS REQUIREMENTS
+
+To prevent the game from getting stale:
+
+Add random social events per turn
+
+Add low-chance special scenes
+
+Add relationship-based interruptions
+
+Add jealousy / misunderstanding events
+
+Events must depend on:
+
+NPC traits
+
+Relationship stage
+
+Past actions
+
+8️⃣ FAILURE IS REQUIRED
+
+Romance must sometimes:
+
+Fail
+
+Be awkward
+
+Require repair
+
+Do NOT make everything succeed automatically.
+
+🔚 FINAL INSTRUCTION
+
+This is a social simulation, not a checklist game.
+
+If an action exists:
+➡ it must affect stats
+➡ it must affect memory
+➡ it must affect future turns
+
+Do not create placeholder text.
+Do not leave systems disconnected.
+Do not simplify romance to one check.

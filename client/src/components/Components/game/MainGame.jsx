@@ -601,7 +601,12 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
     if (item.category === 'gift' && targetNpcId) {
       const effect = calculateGiftEffect(item, targetNpcId);
       const newRelationships = { ...relationships };
-      const enhanced = EnhancedRelationship.fromJSON(newRelationships[targetNpcId]);
+      
+      // Get the current relationship data
+      const relData = newRelationships[targetNpcId];
+      if (!relData) return;
+
+      const enhanced = EnhancedRelationship.fromJSON(relData);
       
       // Apply gift effects
       if (effect.friendship) enhanced.friendship = Math.min(100, enhanced.friendship + effect.friendship);
