@@ -558,13 +558,14 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       const newRelationships = { ...relationships };
       newRelationships[npcId] = updatedRel;
       
-      const updates = { relationships: newRelationships };
+      const updates = { 
+        relationships: newRelationships,
+        romanceTarget: npcId, // Explicitly set the target
+        romanceStatus: (result === 'enthusiastic_yes' || result === 'hesitant_yes') ? 'dating' : romanceStatus,
+        romanceLevel: (result === 'enthusiastic_yes' || result === 'hesitant_yes') ? Math.max(60, updatedRel.romanticInterest) : romanceLevel
+      };
       
       if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
-        updates.romanceTarget = npcId;
-        updates.romanceStatus = 'dating';
-        // Boost romance level significantly on successful ask out
-        updates.romanceLevel = Math.max(60, updatedRel.romanticInterest);
         showNotification(`You're now dating ${npc.name}! ❤️`);
       } else if (result === 'not_yet') {
         showNotification(`${npc.name} said they need more time.`);

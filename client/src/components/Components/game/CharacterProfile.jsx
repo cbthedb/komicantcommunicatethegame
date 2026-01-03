@@ -29,8 +29,8 @@ export default function CharacterProfile({ npcId, relationship, onClose, onInter
     { id: 'hang_out', label: 'Hang Out', icon: Heart, unlockLevel: 20 },
     { id: 'give_gift', label: 'Give Gift', icon: Gift, unlockLevel: 10 },
     { id: 'deep_talk', label: 'Deep Conversation', icon: TrendingUp, unlockLevel: 50 },
-    // If dating, don't show "Ask Out" button
-    ...(rel.stage === 'dating' || rel.stage === 'serious' || (relationship?.status === 'dating')
+    // If dating, show "Romance" button instead of "Ask Out"
+    ...(rel.stage === 'dating' || rel.stage === 'serious' || relationship?.romanceStatus === 'dating'
       ? [{ id: 'romance', label: 'Romance', icon: Heart, unlockLevel: 0 }]
       : [{ id: 'ask_out', label: 'Ask Out', icon: Heart, unlockLevel: 100 }])
   ];
