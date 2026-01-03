@@ -533,6 +533,31 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       return;
     }
 
+    if (actionId === 'ask_out') {
+      const enhanced = EnhancedRelationship.fromJSON(rel);
+      const result = enhanced.processAskOut(day);
+      const updatedRel = enhanced.toJSON();
+      updatedRel.level = updatedRel.friendship;
+      
+      const newRelationships = { ...relationships };
+      newRelationships[npcId] = updatedRel;
+      
+      const updates = { relationships: newRelationships };
+      
+      if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
+        updates.romanceTarget = npcId;
+        updates.romanceStatus = 'dating';
+        updates.romanceLevel = 60;
+        showNotification(`You're now dating ${npc.name}! ❤️`);
+      } else {
+        showNotification(`${npc.name} said they need more time.`);
+      }
+      
+      updateGameState(updates);
+      setShowCharacterProfile(null);
+      return;
+    }
+
     // Handle other interactions (chat, hang out, deep talk)
     const interactionEvents = {
       chat: {
@@ -836,43 +861,66 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
 
   // Handle romantic action
   const handleRomanticAction = (action, targetId) => {
+    const npc = availableNpcs.find(n => n.id === targetId);
+    if (!npc) return;
+
     const newStats = { ...stats };
     const newRelationships = { ...relationships };
     let newMoney = money;
+    let newRomanceTarget = romanceTarget;
+    let newRomanceStatus = romanceStatus;
+    let newRomanceLevel = romanceLevel;
 
     // Apply stat effects
     if (action.energy) newStats.energy = Math.max(0, Math.min(100, newStats.energy + action.energy));
     if (action.money) newMoney = Math.max(0, newMoney + action.money);
 
     // Apply relationship effects
-    const enhanced = EnhancedRelationship.fromJSON(newRelationships[targetId]);
+    const relData = newRelationships[targetId];
+    if (!relData) return;
+    
+    const enhanced = EnhancedRelationship.fromJSON(relData);
 
     if (action.id === 'ask_out') {
       // Process ask out
       const result = enhanced.processAskOut(day);
-      const npc = availableNpcs.find(n => n.id === targetId);
-
+      
       const outcomes = {
         enthusiastic_yes: {
           message: `${npc.name} lights up! "Yes! I'd love to!"`,
-          memory: `They asked me out! I said yes immediately!`
+          status: 'dating',
+          level: 70
         },
         hesitant_yes: {
           message: `${npc.name} blushes deeply. "I... yes, I think so..."`,
-          memory: `They asked me out. I was nervous but said yes.`
+          status: 'dating',
+          level: 60
         },
         not_yet: {
           message: `${npc.name} looks apologetic. "I like you, but I need more time..."`,
-          memory: `They asked me out but I need more time.`
+          status: 'none',
+          level: romanceLevel
         },
         rejection: {
           message: `${npc.name} looks down. "I'm sorry... I don't feel that way about you."`,
-          memory: `They asked me out but I had to say no.`
+          status: 'none',
+          level: Math.max(0, romanceLevel - 10)
         }
       };
 
-      showNotification(outcomes[result].message);
-      newRelationships[targetId] = enhanced.toJSON();
+      const outcome = outcomes[result];
+      showNotification(outcome.message);
+      
+      if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
+        newRomanceTarget = targetId;
+        newRomanceStatus = outcome.status;
+        newRomanceLevel = outcome.level;
+      }
+
+      enhanced.updateStage();
+      const updatedRel = enhanced.toJSON();
+      updatedRel.level = updatedRel.friendship;
+      newRelationships[targetId] = updatedRel;
 
       setShowRomanticActions(false);
       setRomanticTarget(null);
@@ -889,15 +937,20 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       // Add memory
       enhanced.addMemory(`${action.label} - it was nice`);
       enhanced.updateStage();
-      newRelationships[targetId] = enhanced.toJSON();
+      const updatedRel = enhanced.toJSON();
+      updatedRel.level = updatedRel.friendship;
+      newRelationships[targetId] = updatedRel;
 
-      showNotification(`${action.label} with ${availableNpcs.find(n => n.id === targetId)?.name}!`);
+      showNotification(`${action.label} with ${npc.name}!`);
     }
 
     updateGameState({
       stats: newStats,
       relationships: newRelationships,
-      money: newMoney
+      money: newMoney,
+      romanceTarget: newRomanceTarget,
+      romanceStatus: newRomanceStatus,
+      romanceLevel: newRomanceLevel
     });
 
     if (action.id !== 'ask_out') {
