@@ -128,7 +128,11 @@ export class EnhancedRelationship {
     // Rejection penalty
     baseChance -= this.rejectionCount * 15;
 
-    return Math.max(5, Math.min(95, baseChance));
+    // If friendship is 100, we should be much more likely to succeed
+    if (this.friendship >= 95) baseChance += 40;
+    else if (this.friendship >= 80) baseChance += 20;
+
+    return Math.max(5, Math.min(100, baseChance));
   }
 
   // Process ask out
@@ -138,7 +142,17 @@ export class EnhancedRelationship {
     const chance = this.getAskOutChance();
     const roll = Math.random() * 100;
 
-    if (roll < chance * 0.3) {
+    // If affinity is 100, and they aren't totally untrusting, it should be an automatic yes
+    if (this.friendship >= 95 && this.trust >= 50 && this.romanticInterest >= 40) {
+      this.romanticInterest = Math.min(100, this.romanticInterest + 20);
+      this.trust = Math.min(100, this.trust + 10);
+      this.friendship = Math.min(100, this.friendship + 15);
+      this.addMemory('They asked me out! I said yes immediately!');
+      this.updateStage();
+      return 'enthusiastic_yes';
+    }
+
+    if (roll < chance * 0.4) {
       // Enthusiastic yes
       this.romanticInterest = Math.min(100, this.romanticInterest + 20);
       this.trust = Math.min(100, this.trust + 10);
@@ -154,7 +168,7 @@ export class EnhancedRelationship {
       this.addMemory('They asked me out. I was nervous but said yes.');
       this.updateStage();
       return 'hesitant_yes';
-    } else if (roll < chance + 20) {
+    } else if (roll < chance + 15) {
       // Not yet
       this.romanticInterest = Math.max(0, this.romanticInterest + 5);
       this.friendship = Math.max(0, this.friendship - 5);

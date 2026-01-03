@@ -544,6 +544,8 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       const enhanced = EnhancedRelationship.fromJSON(rel);
       const result = enhanced.processAskOut(day);
       const updatedRel = enhanced.toJSON();
+      
+      // Link level and friendship for consistency
       updatedRel.level = updatedRel.friendship;
       
       const newRelationships = { ...relationships };
@@ -554,10 +556,13 @@ export default function MainGame({ gameState, updateGameState, triggerEnding, sa
       if (result === 'enthusiastic_yes' || result === 'hesitant_yes') {
         updates.romanceTarget = npcId;
         updates.romanceStatus = 'dating';
-        updates.romanceLevel = 60;
+        // Boost romance level significantly on successful ask out
+        updates.romanceLevel = Math.max(60, updatedRel.romanticInterest);
         showNotification(`You're now dating ${npc.name}! ❤️`);
-      } else {
+      } else if (result === 'not_yet') {
         showNotification(`${npc.name} said they need more time.`);
+      } else {
+        showNotification(`${npc.name} turned you down...`);
       }
       
       updateGameState(updates);
